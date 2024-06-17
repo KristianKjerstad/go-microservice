@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	app := application.New()
+	app := application.New(application.LoadConfig())
 
 	//allow graceful shutdown upon signal to terminate (ctrl + C) - we want to finish database operations and so on BEFORE shut down
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
