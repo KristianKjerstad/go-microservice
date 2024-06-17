@@ -99,7 +99,7 @@ func (r *RedisRepo) Update(ctx context.Context, order model.Order) error {
 
 	key := orderIDKey(order.OrderID)
 
-	err = r.Client.SetXX(ctx, key, srting(data), 0).Err()
+	err = r.Client.SetXX(ctx, key, string(data), 0).Err()
 	if errors.Is(err, redis.Nil) {
 		return ErrNotExist
 	} else if err != nil {
@@ -110,8 +110,8 @@ func (r *RedisRepo) Update(ctx context.Context, order model.Order) error {
 }
 
 type FindAllPage struct {
-	Size   uint
-	Offset uint
+	Size   uint64
+	Offset uint64
 }
 
 type FindResult struct {
@@ -119,7 +119,7 @@ type FindResult struct {
 	Cursor uint64
 }
 
-func (r *RedisRepo) FindAll(ctx context.Context, paeg FindAllPage) (FindResult, error) {
+func (r *RedisRepo) FindAll(ctx context.Context, page FindAllPage) (FindResult, error) {
 	res := r.Client.SScan(ctx, "orders", page.Offset, "*", int64(page.Size))
 
 	keys, cursor, err := res.Result()
